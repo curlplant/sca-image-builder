@@ -1,4 +1,4 @@
-name: Build Log4j Vuln Image Tar (Self-Built)
+name: Build Log4j Vuln Image Tar (Stable)
 on:
   push:
     branches: [ log4j-vuln ]
@@ -8,6 +8,15 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: 🚀 配置Docker国内镜像源（解决限流）
+        run: |
+          sudo mkdir -p /etc/docker
+          echo '{
+            "registry-mirrors": ["https://docker.mirrors.ustc.edu.cn", "https://hub-mirror.c.163.com"]
+          }' | sudo tee /etc/docker/daemon.json
+          sudo systemctl daemon-reload
+          sudo systemctl restart docker
+
       - name: 🚀 检出代码（获取Dockerfile）
         uses: actions/checkout@v4
 
