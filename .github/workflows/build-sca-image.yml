@@ -1,5 +1,4 @@
 name: Build SCA Test Image Tar
-# 触发条件：推送代码自动跑，也支持手动触发
 on:
   push:
     branches: [ main ]
@@ -9,19 +8,15 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: 🚀 拉取带漏洞的SCA测试镜像（Log4j经典漏洞，完美验证扫描能力）
-        run: |
-          docker pull vulfocus/log4j2-rce-2021-0011:latest
-          docker images # 打印镜像信息，方便排查
-
+      - name: 🚀 拉取alpine轻量镜像（稳定可用，5MB极小体积）
+        run: docker pull alpine:latest
+      
       - name: 📦 导出镜像为tar包
-        run: |
-          docker save -o sca-vuln-test-image.tar vulfocus/log4j2-rce-2021-0011:latest
-          ls -lh sca-vuln-test-image.tar # 验证文件生成
-
+        run: docker save -o sca-light-test-image.tar alpine:latest
+      
       - name: 📤 上传tar包作为可下载产物
         uses: actions/upload-artifact@v4
         with:
-          name: sca-vuln-test-image-tar
-          path: sca-vuln-test-image.tar
-          retention-days: 30 # 保留30天，随时下载
+          name: sca-light-test-image-tar
+          path: sca-light-test-image.tar
+          retention-days: 30
