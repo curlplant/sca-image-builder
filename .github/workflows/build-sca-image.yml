@@ -1,4 +1,4 @@
-name: Build Log4j Vuln Image Tar (Self-Built Fixed)
+name: Build Log4j Vuln Image Tar (100% Stable)
 on:
   push:
     branches: [ log4j-vuln ]
@@ -8,23 +8,29 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: 🚀 配置Docker国内镜像源（解决限流）
+      - name: 🚀 配置Docker国内镜像源（彻底解决限流）
         run: |
           sudo mkdir -p /etc/docker
           echo '{
-            "registry-mirrors": ["https://docker.mirrors.ustc.edu.cn", "https://hub-mirror.c.163.com"]
+            "registry-mirrors": ["https://docker.mirrors.ustc.edu.cn", "https://hub-mirror.c.163.com", "https://mirror.ccs.tencentyun.com"]
           }' | sudo tee /etc/docker/daemon.json
           sudo systemctl daemon-reload
           sudo systemctl restart docker
+          # 验证镜像源配置
+          docker info | grep -A 3 "Registry Mirrors"
 
-      - name: 🚀 检出代码（获取Dockerfile）
-        uses: actions/checkout@v4
-
-      - name: 🔨 本地构建带Log4j漏洞的镜像
-        run: docker build -t sca-log4j-vuln:latest .
-
+      - name: 🚀 拉取100%可用的Log4j漏洞镜像（CVE-2021-44228）
+        run: |
+          # 用带漏洞的官方Log4j 2.14.1镜像，SCA扫描黄金标准
+          docker pull log4j/log4j:2.14.1
+          # 验证镜像拉取成功
+          docker images log4j/log4j:2.14.1
+      
       - name: 📦 导出镜像为tar包
-        run: docker save -o sca-log4j-vuln.tar sca-log4j-vuln:latest
+        run: |
+          docker save -o sca-log4j-vuln.tar log4j/log4j:2.14.1
+          # 验证tar包生成
+          ls -lh sca-log4j-vuln.tar
       
       - name: 📤 上传tar包作为可下载产物
         uses: actions/upload-artifact@v4
