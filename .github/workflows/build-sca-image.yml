@@ -1,4 +1,4 @@
-name: Build Log4j Vuln Image Tar
+name: Build Log4j Vuln Image Tar (Self-Built)
 on:
   push:
     branches: [ log4j-vuln ]
@@ -8,12 +8,15 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: 🚀 拉取开源Log4j漏洞测试镜像
-        run: docker pull christophetd/log4shell-vulnerable-app:latest
-      
+      - name: 🚀 检出代码（获取Dockerfile）
+        uses: actions/checkout@v4
+
+      - name: 🔨 本地构建带Log4j漏洞的镜像
+        run: docker build -t sca-log4j-vuln:latest .
+
       - name: 📦 导出镜像为tar包
-        run: docker save -o sca-log4j-vuln.tar christophetd/log4shell-vulnerable-app:latest
-      
+        run: docker save -o sca-log4j-vuln.tar sca-log4j-vuln:latest
+
       - name: 📤 上传tar包作为可下载产物
         uses: actions/upload-artifact@v4
         with:
