@@ -1,22 +1,21 @@
-name: Build SCA Test Image Tar
+name: Build Log4j Vuln Image Tar
 on:
   push:
-    branches: [ main ]
+    branches: [ log4j-vuln ]
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: 🚀 拉取alpine轻量镜像（稳定可用，5MB极小体积）
-        run: docker pull alpine:latest
-      
-      - name: 📦 导出镜像为tar包
-        run: docker save -o sca-light-test-image.tar alpine:latest
-      
-      - name: 📤 上传tar包作为可下载产物
+      - name: Pull Log4j vulnerability test image (CVE-2021-44228)
+        run: docker pull vulfocus/log4j2-rce:latest
+
+      - name: Export image to tar
+        run: docker save -o sca-log4j-vuln.tar vulfocus/log4j2-rce:latest
+
+      - name: Upload tar package
         uses: actions/upload-artifact@v4
         with:
-          name: sca-light-test-image-tar
-          path: sca-light-test-image.tar
-          retention-days: 30
+          name: sca-log4j-vuln-tar
+          path: sca-log4j-vuln.tar
