@@ -8,11 +8,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: 🚀 拉取稳定可用的Log4j漏洞测试镜像（CVE-2021-44228）
-        run: docker pull vulfocus/log4j2_rce_cve-2021-44228:latest
+      - name: 🚀 拉取开源Log4j漏洞测试镜像
+        run: docker pull christophetd/log4shell-vulnerable-app:latest
       
       - name: 📦 导出镜像为tar包
-        run: docker save -o sca-log4j-vuln.tar vulfocus/log4j2_rce_cve-2021-44228:latest
+        run: docker save -o sca-log4j-vuln.tar christophetd/log4shell-vulnerable-app:latest
       
       - name: 📤 上传tar包作为可下载产物
         uses: actions/upload-artifact@v4
