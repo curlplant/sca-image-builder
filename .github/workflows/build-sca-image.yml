@@ -8,14 +8,15 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Pull Log4j vulnerability test image (CVE-2021-44228)
-        run: docker pull vulfocus/log4j2-rce:latest
-
-      - name: Export image to tar
-        run: docker save -o sca-log4j-vuln.tar vulfocus/log4j2-rce:latest
-
-      - name: Upload tar package
+      - name: 🚀 拉取稳定可用的Log4j漏洞测试镜像（CVE-2021-44228）
+        run: docker pull vulfocus/log4j2_rce_cve-2021-44228:latest
+      
+      - name: 📦 导出镜像为tar包
+        run: docker save -o sca-log4j-vuln.tar vulfocus/log4j2_rce_cve-2021-44228:latest
+      
+      - name: 📤 上传tar包作为可下载产物
         uses: actions/upload-artifact@v4
         with:
           name: sca-log4j-vuln-tar
           path: sca-log4j-vuln.tar
+          retention-days: 30
